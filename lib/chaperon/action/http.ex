@@ -14,7 +14,8 @@ defmodule Chaperon.Action.HTTP do
             body: nil,
             decode: nil,
             callback: nil,
-            metrics_url: nil
+            metrics_url: nil,
+            hackney: nil
 
   @type method :: :get | :post | :put | :patch | :delete | :head
 
@@ -176,6 +177,7 @@ defmodule Chaperon.Action.HTTP do
     decode = opts[:decode]
     callback = opts[:with_result]
     metrics_url = opts[:metrics_url]
+    hackney = opts[:hackney]
 
     {new_headers, body} =
       opts
@@ -184,6 +186,7 @@ defmodule Chaperon.Action.HTTP do
       |> KW.delete(:decode)
       |> KW.delete(:with_result)
       |> KW.delete(:metrics_url)
+      |> KW.delete(:hackney)
       |> parse_body
 
     headers =
@@ -199,7 +202,8 @@ defmodule Chaperon.Action.HTTP do
         body: body,
         decode: decode,
         callback: callback,
-        metrics_url: metrics_url
+        metrics_url: metrics_url,
+        hackney: hackney
     }
   end
 
@@ -207,7 +211,8 @@ defmodule Chaperon.Action.HTTP do
     opts = [
       cookie: session.cookies,
       basic_auth: session.config[:basic_auth],
-      pool: :chaperon
+      pool: :chaperon,
+      insecure: true
     ]
 
     opts
